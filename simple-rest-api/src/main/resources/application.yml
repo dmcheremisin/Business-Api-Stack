@@ -1,0 +1,26 @@
+spring:
+  profiles:
+    active: stage
+
+---
+
+spring:
+  profiles: dev
+
+message: Hello from DEV environment, the current date and time is
+
+---
+
+spring:
+  profiles: stage
+
+message: Hello from STAGE environment, the current date and time is
+
+---
+
+spring:
+  profiles: prod
+
+message: Hello from PROD environment, the current date and time is
+
+---

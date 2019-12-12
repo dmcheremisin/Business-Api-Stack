@@ -1,0 +1,123 @@
+spring:
+  profiles:
+    active: dev
+
+camel:
+  springboot:
+    shutdownTimeout: 2
+    health.indicator.enabled: true
+
+management:
+  security:
+    enabled: false
+
+---
+spring:
+  profiles: mock
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: mail
+    password: secret
+    properties.mail.smtp.auth: true
+    properties.mail.smtp.starttls.enabled: true
+
+mailTo: mailto
+
+startRoute: direct:input
+fromRoute: file:data/input?delete=true&readLock=none
+toRoute1: mock:output
+toRoute2: mock:output1
+toRoute3: mock:output2
+healthRoute: direct:health
+
+message: Mock Environment
+
+---
+spring:
+  profiles: dev
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/localDB
+    username: postgres
+    password: postgres
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    protocol: smtp
+    test-connection: false
+    username: mail
+    password: secret
+    properties.mail.smtp.auth: true
+    properties.mail.smtp.starttls.enabled: true
+
+mailTo: mailto
+
+startRoute: timer:hello?period=10s
+fromRoute: file:data/input?delete=true&readLock=none&moveFailed=error
+toRoute1: file:data/output
+toRoute2: jdbc:dataSource
+toRoute3: file:data/output?fileName=success.txt
+healthRoute: timer:healthRoute?period=10s
+
+message: DEV Environment
+
+---
+spring:
+  profiles: stage
+  datasource:
+      driver-class-name: org.postgresql.Driver
+      url: jdbc:postgresql://localhost:5432/localDB
+      username: postgres
+      password: postgres
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: mail
+    password: secret
+    properties.mail.smtp.auth: true
+    properties.mail.smtp.starttls.enabled: true
+
+mailTo: mailto
+
+startRoute: timer:hello?period=10s
+fromRoute: file:data/input?delete=true&readLock=none&moveFailed=error
+toRoute1: file:data/output
+toRoute2: jdbc:dataSource
+toRoute3: file:data/output?fileName=success.txt
+healthRoute: timer:healthRoute?period=10s
+
+message: STAGE Environment
+
+---
+spring:
+  profiles: prod
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url:  jdbc:postgresql://localhost:5432/localDB
+    username: postgres
+    password: postgres
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: mail
+    password: secret
+    properties.mail.smtp.auth: true
+    properties.mail.smtp.starttls.enabled: true
+
+mailTo: mailto
+
+startRoute: timer:hello?period=10s
+fromRoute: file:data/input?delete=true&readLock=none&moveFailed=error
+toRoute1: file:data/output
+toRoute2: jdbc:dataSource
+toRoute3: file:data/output?fileName=success.txt
+healthRoute: timer:healthRoute?period=10s
+
+message: PROD Environment
+
+---
